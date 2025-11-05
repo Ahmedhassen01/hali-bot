@@ -111,23 +111,111 @@ async def channel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🌐 Author: Eng. Ahmed Hassen <ahmedhassenmohamed11@gmail.com>"
     )
 
-# === INLINE BUTTON CALLBACKS ===
+# === INLINE BUTTON CALLBACKS (UPDATED) ===
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     data = query.data
 
+    # Submenus for categories
+    if data == "webdev":
+        keyboard = [
+            [
+                InlineKeyboardButton("Front-end 🎨", callback_data="frontend"),
+                InlineKeyboardButton("Back-end 🧩", callback_data="backend")
+            ],
+            [
+                InlineKeyboardButton("Full-stack ⚙️", callback_data="fullstack"),
+                InlineKeyboardButton("⬅️ Back", callback_data="main_menu")
+            ]
+        ]
+        await query.edit_message_text(
+            "🌐 Choose your Web Dev path:",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+        return
+
+    # --- Front-end resources ---
+    elif data == "frontend":
+        await query.edit_message_text(
+            "🎨 **Front-end Development Resources**:\n"
+            "• [freeCodeCamp Front-end](https://www.freecodecamp.org/learn/)\n"
+            "• [MDN Web Docs](https://developer.mozilla.org/en-US/)\n"
+            "• [CSS Tricks](https://css-tricks.com)\n"
+            "• [Frontend Mentor](https://www.frontendmentor.io)\n"
+            "• [React Docs](https://react.dev/learn)",
+            parse_mode="Markdown",
+            disable_web_page_preview=True
+        )
+        return
+
+    # --- Back-end resources ---
+    elif data == "backend":
+        await query.edit_message_text(
+            "🧩 **Back-end Development Resources**:\n"
+            "• [Node.js Docs](https://nodejs.org/en/docs/)\n"
+            "• [Django Docs](https://docs.djangoproject.com/)\n"
+            "• [Flask Docs](https://flask.palletsprojects.com/)\n"
+            "• [Express.js Guide](https://expressjs.com/)\n"
+            "• [Database Roadmap](https://roadmap.sh/backend)",
+            parse_mode="Markdown",
+            disable_web_page_preview=True
+        )
+        return
+
+    # --- Full-stack resources ---
+    elif data == "fullstack":
+        await query.edit_message_text(
+            "⚙️ **Full-stack Development Resources**:\n"
+            "• [The Odin Project](https://www.theodinproject.com/)\n"
+            "• [FreeCodeCamp Full-stack](https://www.freecodecamp.org/)\n"
+            "• [MERN Stack Guide](https://www.mongodb.com/mern-stack)\n"
+            "• [Full-stack Roadmap](https://roadmap.sh/full-stack)",
+            parse_mode="Markdown",
+            disable_web_page_preview=True
+        )
+        return
+
+    # --- Return to main menu ---
+    elif data == "main_menu":
+        main_keyboard = [
+            [
+                InlineKeyboardButton("Web Dev 🌐", callback_data='webdev'),
+                InlineKeyboardButton("Python 🐍", callback_data='python'),
+                InlineKeyboardButton("Tech News 📰", callback_data='news')
+            ],
+            [
+                InlineKeyboardButton("Ethical Hacking 💀", callback_data='hacking'),
+                InlineKeyboardButton("Cybersecurity 🛡️", callback_data='cyber'),
+                InlineKeyboardButton("AI & ML 🤖", callback_data='aiml')
+            ],
+            [
+                InlineKeyboardButton("Networking 🌐", callback_data='networking'),
+                InlineKeyboardButton("Cloud ☁️", callback_data='cloud'),
+                InlineKeyboardButton("DevOps ⚙️", callback_data='devops')
+            ],
+            [
+                InlineKeyboardButton("Data Science 📊", callback_data='datasci'),
+                InlineKeyboardButton("Ask Hali ❓", callback_data='hali')
+            ]
+        ]
+        await query.edit_message_text(
+            "👋 Welcome back to the main menu:",
+            reply_markup=InlineKeyboardMarkup(main_keyboard)
+        )
+        return
+
+    # --- Other topics (unchanged) ---
     topics = {
-        "webdev": "🌐 **Web Development Resources**:\n• [MDN Docs](https://developer.mozilla.org)\n• [FreeCodeCamp](https://freecodecamp.org)\n• [CSS Tricks](https://css-tricks.com)",
         "python": "🐍 **Python Learning**:\n• [Docs](https://docs.python.org/3/)\n• [Real Python](https://realpython.com)\n• [Python Tutor](https://pythontutor.com)",
-        "news": "📰 **Tech News Sources**:\n• [TechCrunch](https://techcrunch.com)\n• [The Verge](https://theverge.com)\n• [Wired](https://wired.com)",
-        "hacking": "💀 **Ethical Hacking Resources**:\n• [TryHackMe](https://tryhackme.com)\n• [Hack The Box](https://hackthebox.com)\n• [PortSwigger Academy](https://portswigger.net/web-security)\n• [OverTheWire](https://overthewire.org)\n• [Hacker101](https://www.hacker101.com)",
-        "cyber": "🛡️ **Cybersecurity Resources**:\n• [Cybrary](https://www.cybrary.it)\n• [CISA](https://www.cisa.gov)\n• [MITRE ATT&CK](https://attack.mitre.org)\n• [Security Blue Team](https://securityblue.team)\n• [r/cybersecurity](https://www.reddit.com/r/cybersecurity)",
-        "aiml": "🤖 **AI & Machine Learning**:\n• [Kaggle](https://www.kaggle.com)\n• [Google AI](https://ai.google)\n• [Hugging Face](https://huggingface.co)\n• [Coursera AI](https://www.coursera.org/browse/data-science/machine-learning)",
-        "networking": "🌐 **Networking Resources**:\n• [Cisco Networking Academy](https://www.netacad.com)\n• [NetworkLessons](https://networklessons.com)\n• [CompTIA Network+](https://www.comptia.org)\n• [r/networking](https://www.reddit.com/r/networking)",
-        "cloud": "☁️ **Cloud Computing Resources**:\n• [AWS Training](https://aws.amazon.com/training)\n• [Microsoft Learn Azure](https://learn.microsoft.com/en-us/training/azure)\n• [Google Cloud Skills Boost](https://cloudskillsboost.google)\n• [Cloud Guru](https://acloudguru.com)",
-        "devops": "⚙️ **DevOps Resources**:\n• [Docker Docs](https://docs.docker.com)\n• [Kubernetes](https://kubernetes.io)\n• [Jenkins](https://www.jenkins.io)\n• [GitHub Actions](https://github.com/features/actions)\n• [DevOps Roadmap](https://roadmap.sh/devops)",
-        "datasci": "📊 **Data Science Resources**:\n• [Kaggle](https://www.kaggle.com)\n• [DataCamp](https://www.datacamp.com)\n• [Analytics Vidhya](https://www.analyticsvidhya.com)\n• [r/datascience](https://www.reddit.com/r/datascience)"
+        "news": "📰 **Tech News**:\n• [TechCrunch](https://techcrunch.com)\n• [The Verge](https://theverge.com)\n• [Wired](https://wired.com)",
+        "hacking": "💀 **Ethical Hacking Resources**:\n• [TryHackMe](https://tryhackme.com)\n• [Hack The Box](https://hackthebox.com)\n• [OverTheWire](https://overthewire.org)",
+        "cyber": "🛡️ **Cybersecurity Resources**:\n• [Cybrary](https://www.cybrary.it)\n• [CISA](https://www.cisa.gov)\n• [MITRE ATT&CK](https://attack.mitre.org)",
+        "aiml": "🤖 **AI & ML Resources**:\n• [Kaggle](https://kaggle.com)\n• [Google AI](https://ai.google)\n• [Coursera AI](https://www.coursera.org/browse/data-science/machine-learning)",
+        "networking": "🌐 **Networking**:\n• [Cisco Academy](https://www.netacad.com)\n• [NetworkLessons](https://networklessons.com)\n• [CompTIA Network+](https://www.comptia.org)",
+        "cloud": "☁️ **Cloud Resources**:\n• [AWS Training](https://aws.amazon.com/training)\n• [Azure Learn](https://learn.microsoft.com/en-us/training/azure)\n• [Google Cloud Skills](https://cloudskillsboost.google)",
+        "devops": "⚙️ **DevOps**:\n• [Docker Docs](https://docs.docker.com)\n• [Kubernetes](https://kubernetes.io)\n• [GitHub Actions](https://github.com/features/actions)",
+        "datasci": "📊 **Data Science**:\n• [Kaggle](https://kaggle.com)\n• [DataCamp](https://datacamp.com)\n• [Analytics Vidhya](https://www.analyticsvidhya.com)"
     }
 
     if data in topics:
@@ -136,6 +224,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("Type /hali <your question> to chat with Hali AI.")
     else:
         await query.edit_message_text("Unknown option.")
+
 
 # === AI HANDLER (Gemini API) ===
 async def ai_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
